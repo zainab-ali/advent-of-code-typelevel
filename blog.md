@@ -170,4 +170,63 @@ An instance of a type class is an implementation of the type class functions for
 
 ### Cats
 
-#### Monoid
+Cats is a library that contains typeclasses and standard typeclass instances for them.
+Libraries that build on cats share a common group of typeclasses, so tend to work well with each other.
+
+We're going to add cats typeclasses into our code.
+
+#### Semigroups and Monoids
+
+The typeclasses we'll explore are Semigroup and Monoid.
+
+The Semigroup typeclass has a single function `combine` that combines two values.
+
+```scala
+trait Semigroup[A] {
+  def combine(a: A, b: A): A
+}
+```
+
+The combine operation must satisfy 
+
+`combine(a, combine(b, c))` must be equal to `combine(combine(a, b), c)` for all `a`, `b` and `c`.
+
+One such operation is `+` on numbers. For example, `1 + (2 + 3)` is equal to `(1 + 2) + 3`.
+
+Can you think of any other operations that are valid? Try and think of:
+ - at least one other operation on `Int`
+ - at least one operation on `String`
+ - at least one operation on `List[String]`
+   
+Which ones did you come up with?  Here are ours:
+
+> ... I'm leaving this for Kai to fill in :) ...
+
+What about `-` on `Int`?  is this a valid Semigroup?
+
+> Kai to fill this in too
+
+Semigroups are useful when we want to combine things together, but don't want to tie ourselves down to what those things are.
+
+For example, consider the following function:
+
+```scala
+def combineEverything[A](as: List[A], initial: A)(implicit S: Semigroup[A]): A = ???
+```
+
+Try writing this function using `as.foldLeft`.  
+
+We can use this function to combine anything that has a semigroup.
+
+```scala
+combineEverything(List(1,2, 3), 0)
+combineEverything(List("foo", "bar"), "baz")
+```
+
+would be valid uses.
+
+Let's try using a semigroup to sum all our numbers in `sumFuels`.  Can you give it a try?
+
+It turns out that you can't.  We don't have quite enough information to sum all our fuels -specifically, we don't know what to do if our list of fuels is empty.
+
+This is where Monoids come in.
